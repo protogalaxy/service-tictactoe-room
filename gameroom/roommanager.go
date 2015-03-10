@@ -67,6 +67,10 @@ func NewRoomManager() *RoomManager {
 }
 
 func (m *RoomManager) CreateRoom(ctx context.Context, req *CreateRequest) (*CreateReply, error) {
+	if req.UserId == "" {
+		return nil, errors.New("missing user id")
+	}
+
 	var rep CreateReply
 	if m.isUserInAnyRoom(req.UserId) {
 		rep.Status = ResponseStatus_ALREADY_IN_ROOM
@@ -87,6 +91,10 @@ func (m *RoomManager) CreateRoom(ctx context.Context, req *CreateRequest) (*Crea
 }
 
 func (m *RoomManager) RoomInfo(ctx context.Context, req *InfoRequest) (*InfoReply, error) {
+	if req.RoomId == "" {
+		return nil, errors.New("missing room id")
+	}
+
 	var rep InfoReply
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -105,6 +113,10 @@ func (m *RoomManager) RoomInfo(ctx context.Context, req *InfoRequest) (*InfoRepl
 }
 
 func (m *RoomManager) JoinRoom(ctx context.Context, req *JoinRequest) (*JoinReply, error) {
+	if err := validateJoinRequest(req); err != nil {
+		return nil, err
+	}
+
 	var rep JoinReply
 	m.lock.Lock()
 	defer m.lock.Unlock()
@@ -131,6 +143,16 @@ func (m *RoomManager) JoinRoom(ctx context.Context, req *JoinRequest) (*JoinRepl
 
 	rep.Status = ResponseStatus_SUCCESS
 	return &rep, nil
+}
+
+func validateJoinRequest(req *JoinRequest) error {
+	if req.RoomId == "" {
+		return errors.New("missing room id")
+	}
+	if req.UserId == "" {
+		return errors.New("missing user id")
+	}
+	return nil
 }
 
 func (m *RoomManager) isUserInAnyRoom(userID string) bool {

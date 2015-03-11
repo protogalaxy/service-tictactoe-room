@@ -21,11 +21,10 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/golang/glog"
+	"github.com/protogalaxy/service-tictactoe-room/Godeps/_workspace/src/code.google.com/p/go-uuid/uuid"
+	"github.com/protogalaxy/service-tictactoe-room/Godeps/_workspace/src/github.com/golang/glog"
+	"github.com/protogalaxy/service-tictactoe-room/Godeps/_workspace/src/golang.org/x/net/context"
 	"github.com/protogalaxy/service-tictactoe-room/tictactoe"
-	"golang.org/x/net/context"
-
-	"code.google.com/p/go-uuid/uuid"
 )
 
 type room struct {

@@ -34,9 +34,8 @@ package proto_test
 import (
 	"testing"
 
-	"github.com/golang/protobuf/proto"
-
 	pb "./testdata"
+	"github.com/protogalaxy/service-tictactoe-room/Godeps/_workspace/src/github.com/golang/protobuf/proto"
 )
 
 var cloneTestMessage = &pb.MyMessage{

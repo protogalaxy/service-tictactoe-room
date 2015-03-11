@@ -13,29 +13,6 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-package main
+//go:generate protoc --go_out=plugins=grpc:. -I ../protos ../protos/tictactoe.proto
 
-import (
-	"flag"
-	"math/rand"
-	"net"
-	"time"
-
-	"github.com/golang/glog"
-	"github.com/protogalaxy/service-tictactoe-room/gameroom"
-	"google.golang.org/grpc"
-)
-
-func main() {
-	flag.Parse()
-	rand.Seed(time.Now().UnixNano())
-
-	socket, err := net.Listen("tcp", ":9090")
-	if err != nil {
-		glog.Fatalf("failed to listen: %v", err)
-	}
-
-	grpcServer := grpc.NewServer()
-	gameroom.RegisterRoomManagerServer(grpcServer, gameroom.NewRoomManager(nil))
-	grpcServer.Serve(socket)
-}
+package tictactoe

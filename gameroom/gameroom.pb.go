@@ -87,6 +87,7 @@ func (*JoinRequest) ProtoMessage()    {}
 
 type JoinReply struct {
 	Status ResponseStatus `protobuf:"varint,1,opt,name=status,enum=gameroom.ResponseStatus" json:"status,omitempty"`
+	GameId string         `protobuf:"bytes,2,opt,name=game_id" json:"game_id,omitempty"`
 }
 
 func (m *JoinReply) Reset()         { *m = JoinReply{} }

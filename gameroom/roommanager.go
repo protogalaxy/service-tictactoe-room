@@ -21,6 +21,8 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/golang/glog"
+	"github.com/protogalaxy/service-tictactoe-room/tictactoe"
 	"golang.org/x/net/context"
 
 	"code.google.com/p/go-uuid/uuid"
@@ -30,6 +32,7 @@ type room struct {
 	ID          string
 	Owner       string
 	OtherPlayer string
+	GameId      string
 }
 
 func (r *room) join(userID string) error {
@@ -56,12 +59,15 @@ type RoomManager struct {
 	lock  sync.Mutex
 	rooms map[string]*room
 
+	client    tictactoe.GameManagerClient
 	Generator Generator
 }
 
-func NewRoomManager() *RoomManager {
+func NewRoomManager(gc tictactoe.GameManagerClient) *RoomManager {
 	return &RoomManager{
-		rooms:     make(map[string]*room),
+		rooms: make(map[string]*room),
+
+		client:    gc,
 		Generator: &UUIDGenerator{},
 	}
 }
@@ -142,6 +148,17 @@ func (m *RoomManager) JoinRoom(ctx context.Context, req *JoinRequest) (*JoinRepl
 	}
 
 	rep.Status = ResponseStatus_SUCCESS
+
+	cr, err := m.client.CreateGame(ctx, &tictactoe.CreateRequest{
+		UserIds: []string{room.Owner, room.OtherPlayer},
+	})
+	if err != nil {
+		glog.Errorf("Unable to create a game for room: %s", err)
+	} else {
+		room.GameId = cr.GameId
+		rep.GameId = cr.GameId
+	}
+
 	return &rep, nil
 }
 

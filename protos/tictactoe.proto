@@ -15,49 +15,21 @@
 
 syntax = "proto3";
 
-package gameroom;
+package tictactoe;
 
-service RoomManager {
-  rpc CreateRoom (CreateRequest) returns (CreateReply) {}
-  rpc JoinRoom (JoinRequest) returns (JoinReply) {}
-  rpc RoomInfo (InfoRequest) returns (InfoReply) {}
-}
-
-enum ResponseStatus {
-  SUCCESS = 0;
-  ROOM_FULL = 1;
-  ROOM_NOT_FOUND = 2;
-  ALREADY_IN_ROOM = 3;
+service GameManager {
+  rpc CreateGame (CreateRequest) returns (CreateReply) {}
 }
 
 message CreateRequest {
-  string user_id = 1;
+  repeated string user_ids = 1;
 }
 
 message CreateReply {
+  enum ResponseStatus {
+    SUCCESS = 0;
+  }
+
   ResponseStatus status = 1;
-  string room_id = 2;
-}
-
-message JoinRequest {
-  string room_id = 1;
-  string user_id = 2;
-}
-
-message JoinReply {
-  ResponseStatus status = 1;
-  optional string game_id = 2;
-}
-
-message InfoRequest {
-  string room_id = 1;
-}
-
-message Room {
-  string id = 1;
-}
-
-message InfoReply {
-  ResponseStatus status = 1;
-  Room room = 2;
+  string game_id = 2;
 }
